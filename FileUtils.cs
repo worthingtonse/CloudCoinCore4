@@ -89,20 +89,11 @@ namespace Foundation
             return returnCC;
         }//end load one CloudCoin from JSON
 
-        public CloudCoin[] loadManyCloudCoinFromJsonFile(String loadFilePath)
+        public CloudCoin[] loadManyCloudCoinFromJsonFile(String loadFilePath, string incomeJson)
         {
             CloudCoin[] returnCoins;
             
-            String incomeJson = this.importJSON(loadFilePath);//Load file as JSON .stack or .chest
-            if (!seemsValidJSON(incomeJson)) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Out.WriteLine("The following file does not appear to be valid JSON. It will be moved to the Trash Folder: " );
-                Console.Out.WriteLine(loadFilePath);
-                Console.Out.WriteLine("Paste the text into http://jsonlint.com/ to check for validity.");
-                Console.ForegroundColor = ConsoleColor.White;
-                returnCoins = null;
-                return returnCoins;
-            }
+           
             //Remove "{ "cloudcoin": ["
             int secondCurlyBracket = ordinalIndexOf(incomeJson, "{", 2) - 1;
             incomeJson = incomeJson.Substring(secondCurlyBracket);
@@ -177,44 +168,7 @@ namespace Foundation
         }//end load one CloudCoin from JSON
 
 
-        public bool seemsValidJSON( string json) {
-            /*This does some simple tests to see if the JSON is valid. It is not precise.*/
-
-            
-            if ( json.Count(f => f == '{') != json.Count(f => f == '}')  ) {
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Out.WriteLine("The stack file did not have a matching number of { }. There were " + json.Count(f => f == '{') + " {, and " + json.Count(f => f == '}') +" }");
-                Console.ForegroundColor = ConsoleColor.White;
-                return false; }//Check if number of currly brackets open are the same as closed
-            if ( json.Count(f => f == '[') != json.Count(f => f == ']')) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Out.WriteLine("The stack file did not have a matching number of []. There were " + json.Count(f => f == '[') + " [, and " + json.Count(f => f == ']') +" ]");
-                Console.ForegroundColor = ConsoleColor.White;
-                return false; }//Check if number of  brackets open are the same as closed
-            if ( IsOdd(json.Count(f => f == '\"')) ) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Out.WriteLine("The stack file did not have a matching number of double quotations");
-                Console.ForegroundColor = ConsoleColor.White;
-                return false; }//Check if number of
-            if ( IsNotFive( json.Count(f => f == ':') -1))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Out.WriteLine("The stack file did not have a the right number of full colons :");
-                Console.ForegroundColor = ConsoleColor.White;
-                return false;
-            }//Check if number of
-            return true;
-        }//end seems valid
-
-        public static bool IsOdd(int value)
-        {
-            return value % 2 != 0;
-        }
-        public static bool IsNotFive(int value)
-        {
-            return value % 5 != 0;
-        }
+      
 
         public CloudCoin loadOneCloudCoinFromJPEGFile(String loadFilePath)
         { 
@@ -306,7 +260,7 @@ namespace Foundation
 
             json += quote + "]," + Environment.NewLine;//"],
             // End of ans
-            json += tab + tab + quote + "ed" + quote + ":" + quote + "0-000" + quote + "," + Environment.NewLine; // "ed":"9-2016",
+            json += tab + tab + quote + "ed" + quote + ":" + quote + cc.ed + quote + "," + Environment.NewLine; // "ed":"9-2016",
             json += tab + tab + quote + "aoid" + quote + ": [";
 
             int count = 0;
@@ -324,8 +278,8 @@ namespace Foundation
                 }//end for each
             }//end if null
 
-            json += "]" + Environment.NewLine;
-            json += tab + tab + "}" + Environment.NewLine;
+            json += Environment.NewLine + tab + tab + "]" + Environment.NewLine;
+            json += "}";
             // Keep expiration date when saving (not a truley accurate but good enought )
             return json;
         }
@@ -345,9 +299,11 @@ namespace Foundation
                 cloudCoinStr = cloudCoinStr + cc.ans[i];
             } // end for each an
 
-            cloudCoinStr += "204f42455920474f4420262044454645415420545952414e54532000";// Hex for " OBEY GOD & DEFEAT TYRANTS "
+            cloudCoinStr += "204f42455920474f4420262044454645415420545952414e545320";// Hex for " OBEY GOD & DEFEAT TYRANTS "
+            cloudCoinStr += "00"; // HC: Has comments. 00 = No
             cloudCoinStr += "00"; // LHC = 100%
-            cloudCoinStr += "97E2"; // 0x97E2;//Expiration date Sep. 2018
+            cc.calcExpirationDate();
+            cloudCoinStr += cc.edHex; // 0x97E2;//Expiration date Sep. 2018
             cloudCoinStr += "01";//  cc.nn;//network number
             String hexSN = cc.sn.ToString("X6");
             String fullHexSN = "";
@@ -360,7 +316,7 @@ namespace Foundation
                 case 5: fullHexSN = ("0" + hexSN);   break;
                 case 6:fullHexSN = hexSN;     break;
             }
-            cloudCoinStr = (cloudCoinStr + fullHexSN);
+            cloudCoinStr = (cloudCoinStr + fullHexSN);   
             /* BYTES THAT WILL GO FROM 04 to 454 (Inclusive)*/
             byte[] ccArray = this.hexStringToByteArray(cloudCoinStr);
             
@@ -511,7 +467,7 @@ namespace Foundation
                 cc.pans[i] = cc.generatePan();
                 cc.setPastStatus("undetected", i);
             }
-            cc.fileName = cc.getDenomination() + ".CloudCoin." + cc.nn + "." + cc.sn + ".";
+            cc.fileName = cc.getDenomination() + ".CloudCoin."+ cc.nn + "." + cc.sn + ".";
           //  Console.Out.WriteLine("parseJpeg cc.fileName " + cc.fileName);
             // end for each pan
             return cc;
