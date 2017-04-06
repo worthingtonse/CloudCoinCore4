@@ -22,7 +22,6 @@ namespace Foundation
 
         public static int NUM_ERROR_MESSAGES = 6;
 
-        private static string DEFAULT_ERROR_MESSAGE = "Please reenter. ";
 
         private string prompt = "> ";
 
@@ -42,45 +41,6 @@ namespace Foundation
 
 
 
-        public void setErrorMessage(int idx, string msg)
-        {
-            if (((idx >= 0)
-                        && (idx < this.errorMessages.Length)))
-            {
-                this.errorMessages[idx] = msg;
-            }
-
-        }
-
-        public void setErrorMessageString(string msg)
-        {
-            this.errorMessages[STRING_MESSAGE] = msg;
-        }
-
-        public void setErrorMessageInt(string msg)
-        {
-            this.errorMessages[INT_MESSAGE] = msg;
-        }
-
-        public void setErrorMessageDouble(string msg)
-        {
-            this.errorMessages[DOUBLE_MESSAGE] = msg;
-        }
-
-        public void setErrorMessageChar(string msg)
-        {
-            this.errorMessages[CHAR_MESSAGE] = msg;
-        }
-
-        public void setErrorMessageBoolean(string msg)
-        {
-            this.errorMessages[BOOLEAN_MESSAGE] = msg;
-        }
-
-        public void setErrorMessageLong(string msg)
-        {
-            this.errorMessages[LONG_MESSAGE] = msg;
-        }
 
         public string readString()
         {
@@ -107,22 +67,7 @@ namespace Foundation
             return result;
         }
 
-        public string readString(bool allowEmpty)
-        {
-            string result = this.readString();
-            if (!allowEmpty)
-            {
-                while ((result.Length == 0))
-                {
-                    Console.Out.WriteLine(("Empty input not allowed. " + this.errorMessages[STRING_MESSAGE]));
-                    Console.Out.Write(this.prompt);
-                    result = this.readString();
-                }
-
-            }
-
-            return result;
-        }
+      
 
         public string readString(string[] args)
         {
@@ -130,7 +75,7 @@ namespace Foundation
             result = result.ToLower();
             while (!args.Any(result.Contains))
             {
-                Console.Out.WriteLine(("Please enter one of the following: " + ConvertStringArrayToString(args)));
+                Console.Out.WriteLine( StringHolder.keyboardreader_2 + ConvertStringArrayToString(args));// "Please enter one of the following: " );
                 Console.Out.Write(this.prompt);
                 result = this.readString(args);
             }
@@ -138,27 +83,8 @@ namespace Foundation
             return result;
         }
 
-        public string readString(int charLimit)
-        {
-            string result = this.readString();
-            if ((result.Length > charLimit))
-            {
-                result = result.Substring(0, charLimit);
-            }
+       
 
-            return result;
-        }
-
-        public string readString(bool allowEmpty, int charLimit)
-        {
-            string result = this.readString(allowEmpty);
-            if ((result.Length > charLimit))
-            {
-                result = result.Substring(0, charLimit);
-            }
-
-            return result;
-        }
 
         public int readInt()
         {
@@ -176,7 +102,7 @@ namespace Foundation
                 }
                 catch (FormatException e)
                 {
-                    Console.Out.WriteLine(("Input is not an integer. " + this.errorMessages[INT_MESSAGE]));
+                    Console.Out.WriteLine(StringHolder.keyboardreader_3  + this.errorMessages[INT_MESSAGE]);// "Input is not an integer. ";
                     Console.Out.Write(this.prompt);
                 }
 
@@ -199,7 +125,7 @@ namespace Foundation
                     number = Convert.ToInt32(inputString);
                     if (((number < min) || (number > max)))
                     {
-                        Console.Out.WriteLine(("Please enter an integer between " + (min + (" and " + max))));
+                        Console.Out.WriteLine( StringHolder.keyboardreader_4 + min + " & " + max );//"Please enter an integer between " 
                     }
                     else
                     {
@@ -209,7 +135,7 @@ namespace Foundation
                 }
                 catch (FormatException e)
                 {
-                    Console.Out.WriteLine("Input is not an integer. " + " Please enter an integer between " + min + " and " + max);
+                    Console.Out.WriteLine( StringHolder.keyboardreader_5 + min + " & " + max);//"Input is not an integer. Please enter an integer between " 
                     Console.Out.Write(this.prompt);
                 }
 
@@ -223,7 +149,7 @@ namespace Foundation
             int result = this.readInt();
             while (!this.checkInArray(result, args))
             {
-                Console.Out.WriteLine(("Please enter one of the following: " + string.Join(",", args)));
+                Console.Out.WriteLine( StringHolder.keyboardreader_6 + string.Join(",", args) );// "Please enter one of the following: "
                 Console.Out.Write(this.prompt);
                 result = this.readInt(args);
             }
@@ -274,7 +200,7 @@ namespace Foundation
             catch (InvalidOperationException e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("Fatal error. Exiting program.");
+                Console.WriteLine( StringHolder.keyboardreader_6 );// "Fatal error. Exiting program.");
                 return (char)charAsInt;
             }
 
