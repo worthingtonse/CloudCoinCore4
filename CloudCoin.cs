@@ -13,8 +13,8 @@ namespace Foundation
         public String[] pans = new String[25];// Proposed Authenticty Numbers
         public enum Status {  fail, pass, error, undetected };
         public Status[] pastStatus = new Status[25];
-        public String ed;// Expiration Date expressed as a hex string like 97e2 Sep 2016
-        public String edHex;// ed in hex form. 
+        public String ed;// Expiration Date expressed as a hex string like 9-2016
+        public String edHex;// ed in hex form like like 97e2 Sep 2016. 
         public int hp;// HitPoints (1-25, One point for each server not failed)
         public Dictionary<string, string> aoid = new Dictionary<string, string>();// Account or Owner ID
         public String fileName;
@@ -314,11 +314,11 @@ namespace Foundation
         // end grade coin
         public void calcExpirationDate()
         {
-            DateTime date = new DateTime();
+            DateTime date = DateTime.Today;
             date.AddYears(YEARSTILEXPIRE);
             this.ed = (date.Month + "-" + date.Year);
             this.edHex = date.Month.ToString("X1");
-            this.edHex += (this.edHex + date.Year.ToString("X4"));
+            this.edHex += date.Year.ToString("X3");
         }
 
         // end calc exp date
@@ -330,7 +330,21 @@ namespace Foundation
                 provider.GetBytes(bytes);
 
                 Guid pan = new Guid(bytes);
-                return pan.ToString("N");
+                String rawpan = pan.ToString("N");
+                String fullPan = "";
+                switch (rawpan.Length)//Make sure the pan is 32 characters long. The odds of this happening are slim but it will happen.
+                {
+                    case 27: fullPan = ("00000" + rawpan); break;
+                    case 28: fullPan = ("0000" + rawpan); break;
+                    case 29: fullPan = ("000" + rawpan); break;
+                    case 30: fullPan = ("00" + rawpan); break;
+                    case 31: fullPan = ("0" + rawpan); break;
+                    case 32: fullPan = rawpan; break;
+                    case 33: fullPan = rawpan.Substring(0, rawpan.Length - 1); break;//trim one off end
+                    case 34: fullPan = rawpan.Substring(0, rawpan.Length - 2); break;//trim one off end
+                }
+
+                return fullPan;
             }
         }
 
@@ -537,7 +551,7 @@ namespace Foundation
             Console.Out.WriteLine("");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Out.WriteLine("╔══════════════════════════════════════════════════════╗");
-            Console.Out.WriteLine("║  Authenticity Report SN #" + string.Format("{0,8}", this.sn) + ", Denomination: " + string.Format("{0,3}", this.getDenomination()) + " ║");
+            Console.Out.WriteLine( StringHolder.cloudcoin_report + string.Format("{0,8}", this.sn) + StringHolder.cloudcoin_denomination + string.Format("{0,3}", this.getDenomination()) + " ║");
             Console.Out.WriteLine("╠══════════╦══════════╦══════════╦══════════╦══════════╣");
             Console.Out.Write("║    "); a(pastStatus[0]);  Console.Out.Write("     ║    "); a(pastStatus[1]);   Console.Out.Write("     ║    "); a(pastStatus[2]);  Console.Out.Write("     ║    "); a(pastStatus[3]);  Console.Out.Write("     ║    "); a(pastStatus[4]);  Console.Out.WriteLine("     ║");
             Console.Out.WriteLine("╠══════════╬══════════╬══════════╬══════════╬══════════╣");
