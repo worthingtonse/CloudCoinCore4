@@ -67,7 +67,7 @@ namespace Foundation
                     if (!File.Exists(this.fileUtils.trashFolder + fname))
                     {
                         File.Move(this.fileUtils.importFolder + fname, this.fileUtils.trashFolder + fname);
-                        Console.Out.WriteLine("File moved to trash: " + fname);
+                        Console.Out.WriteLine( StringHolder.importer_1 + fname );// "File moved to trash: " + fname);
                     }
                     else
                     {
@@ -78,6 +78,7 @@ namespace Foundation
                     return false;//"Failed to load JPEG file");
                 }//end if import fails
             }//end if jpeg
+            /*
             else if (extension == "chest" || extension == ".chest")//Run if file is a jpeg
             {
                 if (!this.importChest(fname))
@@ -90,11 +91,12 @@ namespace Foundation
                     return false;//"Failed to load JPEG file");
                 }//end if import fails
             }//end if jpeg
+            */
             else if (!this.importStack(fname))// run if file is a stack
             {
                 if (! File.Exists(this.fileUtils.trashFolder + fname)) {
                     File.Move(this.fileUtils.importFolder + fname, this.fileUtils.trashFolder + fname);
-                    Console.Out.WriteLine("File moved to trash: " + fname);
+                    Console.Out.WriteLine( StringHolder.importer_1);// "File moved to trash: " + fname);
                 }
                 return false;//"Failed to load .stack file");
             }
@@ -174,7 +176,15 @@ namespace Foundation
             //  System.out.println("Trying to load: " + importFolder + fileName );
             try
             {
-                CloudCoin[] tempCoin = this.fileUtils.loadManyCloudCoinFromJsonFile(this.fileUtils.importFolder + fileName);
+                String incomeJson = fileUtils.importJSON( this.fileUtils.importFolder + fileName );//Load file as JSON .stack or .chest
+                CloudCoin[] tempCoin = null;
+                if (!seemsValidJSON(incomeJson))
+                {
+
+                    tempCoin = this.fileUtils.loadManyCloudCoinFromJsonFile(this.fileUtils.importFolder + fileName, incomeJson);
+
+                }
+                
                 if (tempCoin != null)
                 {
                     for (int i = 0; i < tempCoin.Length; i++)
@@ -184,6 +194,12 @@ namespace Foundation
                     return true;
                 }//end if lenth not null. 
                 else {
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Out.WriteLine(StringHolder.importer_importstack1 );// "The following file does not appear to be valid JSON. It will be moved to the Trash Folder: ");
+                    Console.Out.WriteLine(fileName);
+                    Console.Out.WriteLine( StringHolder.importer_importstack2);// "Paste the text into http://jsonlint.com/ to check for validity.");
+                    Console.ForegroundColor = ConsoleColor.White;
                     return false;//CloudCoin was null so move to trash
                 }
                
@@ -202,13 +218,61 @@ namespace Foundation
         }//import stack
 
 
+        public bool seemsValidJSON(string json)
+        {
+            /*This does some simple tests to see if the JSON is valid. It is not precise.*/
+
+
+            if (json.Count(f => f == '{') != json.Count(f => f == '}'))
+            {
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Out.WriteLine( StringHolder.importer_seemsValidJSON_1 );// "The stack file did not have a matching number of { }. There were " + json.Count(f => f == '{') + " {, and " + json.Count(f => f == '}') + " }");
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }//Check if number of currly brackets open are the same as closed
+            if (json.Count(f => f == '[') != json.Count(f => f == ']'))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Out.WriteLine( StringHolder.importer_seemsValidJSON_2);//"The stack file did not have a matching number of []. There were " + json.Count(f => f == '[') + " [, and " + json.Count(f => f == ']') + " ]");
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }//Check if number of  brackets open are the same as closed
+            if (IsOdd(json.Count(f => f == '\"')))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Out.WriteLine( StringHolder.importer_seemsValidJSON_3);//"The stack file did not have a matching number of double quotations");
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }//Check if number of
+            if (IsNotFive(json.Count(f => f == ':') - 1))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Out.WriteLine( StringHolder.importer_seemsValidJSON_4);//"The stack file did not have a the right number of full colons :");
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }//Check if number of
+            return true;
+        }//end seems valid
+
+
+        public static bool IsOdd(int value)
+        {
+            return value % 2 != 0;
+        }
+        public static bool IsNotFive(int value)
+        {
+            return value % 5 != 0;
+        }
+
+/*
         private bool importChest(String fileName)
         {
             bool isSuccessful = false;
             //  System.out.println("Trying to load: " + importFolder + fileName );
             try
             {
-                CloudCoin[] tempCoin = this.fileUtils.loadManyCloudCoinFromJsonFile(this.fileUtils.importFolder + fileName);
+                CloudCoin[] tempCoin = fileUtils.loadManyCloudCoinFromJsonFile(this.fileUtils.importFolder + fileName,);
 
                 for (int i = 0; i < tempCoin.Length; i++)
                 {
@@ -228,7 +292,7 @@ namespace Foundation
             // end try catch
             return isSuccessful;
         }//import stack
-
+    */
 
         public string bytesToHexString(byte[] data)
         {
