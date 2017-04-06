@@ -30,7 +30,7 @@ namespace Foundation
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Out.WriteLine("");
-                Console.Out.WriteLine("RAIDA Fails Echo or Fix. Try again when RAIDA online.");
+                Console.Out.WriteLine( StringHolder.frackfixer_1 );// "RAIDA Fails Echo or Fix. Try again when RAIDA online.");
                 Console.Out.WriteLine("");
                 Console.ForegroundColor = ConsoleColor.White;
                 return "RAIDA Fails Echo or Fix. Try again when RAIDA online.";
@@ -60,7 +60,7 @@ namespace Foundation
                         if (fixResponse.success) {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.Out.WriteLine("");
-                            Console.Out.WriteLine("RAIDA" + raida_ID + " unfracked successfully.");
+                            Console.Out.WriteLine( "RAIDA" + raida_ID + StringHolder.frackfixer_2 );//" unfracked successfully.");
                             Console.Out.WriteLine("");
                             Console.ForegroundColor = ConsoleColor.White;
                             return "RAIDA" + raida_ID + " unfracked successfully.";
@@ -71,7 +71,7 @@ namespace Foundation
 
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.Out.WriteLine("");
-                            Console.Out.WriteLine("RAIDA failed to accept tickets on corner " + corner);
+                            Console.Out.WriteLine(StringHolder.frackfixer_3 + corner);//"RAIDA failed to accept tickets on corner " + corner);
                             Console.Out.WriteLine("");
                             Console.ForegroundColor = ConsoleColor.White;
                             return "RAIDA failed to accept tickets on corner " + corner;
@@ -81,7 +81,7 @@ namespace Foundation
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Out.WriteLine("");
-                        Console.Out.WriteLine("Trusted servers failed to provide tickets for corner " + corner);
+                        Console.Out.WriteLine(StringHolder.frackfixer_4 + corner);//"Trusted servers failed to provide tickets for corner " + corner);
                         Console.Out.WriteLine("");
                         Console.ForegroundColor = ConsoleColor.White;
 
@@ -91,7 +91,7 @@ namespace Foundation
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Out.WriteLine("");
-                Console.Out.WriteLine("One or more of the trusted triad will not echo and detect.So not trying.");
+                Console.Out.WriteLine(StringHolder.frackfixer_5 );//"One or more of the trusted triad will not echo and detect.So not trying.");
                 Console.Out.WriteLine("");
                 Console.ForegroundColor = ConsoleColor.White;
                 return "One or more of the trusted triad will not echo and detect. So not trying.";
@@ -109,14 +109,14 @@ namespace Foundation
             CloudCoin frackedCC;
             if ( frackedFileNames.Length < 0) {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Out.WriteLine("You have no fracked coins.");
+                Console.Out.WriteLine(StringHolder.frackfixer_6 );// "You have no fracked coins.");
                 Console.ForegroundColor = ConsoleColor.White;
             }//no coins to unfrack
 
             
             for ( int i = 0; i < frackedFileNames.Length; i++ )
             {
-                Console.WriteLine("UnFracking coin " + (i+1) +" of " + frackedFileNames.Length);
+                Console.WriteLine(StringHolder.frackfixer_unfracking + (i+1) +" of " + frackedFileNames.Length);
                 try
                 {
                     frackedCC = fileUtils.loadOneCloudCoinFromJsonFile( this.fileUtils.frackedFolder + frackedFileNames[i] );
@@ -134,19 +134,19 @@ namespace Foundation
                             this.totalValueToBank++;
                             this.fileUtils.overWrite(this.fileUtils.bankFolder, fixedCC);
                             this.deleteCoin(this.fileUtils.frackedFolder + frackedFileNames[i]);
-                            Console.WriteLine("CloudCoin was moved to Bank.");
+                            Console.WriteLine(StringHolder.frackfixer_8);//"CloudCoin was moved to Bank.");
                             break;
                         case "counterfeit":
                             this.totalValueToCounterfeit++;
                             this.fileUtils.overWrite(this.fileUtils.counterfeitFolder, fixedCC);
                             this.deleteCoin(this.fileUtils.frackedFolder + frackedFileNames[i]);
-                            Console.WriteLine("CloudCoin was moved to Trash.");
+                            Console.WriteLine(StringHolder.frackfixer_9);//"CloudCoin was moved to Trash.");
                             break;
                         default://Move back to fracked folder
                             this.totalValueToFractured++;
                             this.deleteCoin(this.fileUtils.frackedFolder + frackedFileNames[i]);
                             this.fileUtils.overWrite(this.fileUtils.frackedFolder, fixedCC);
-                            Console.WriteLine("CloudCoin was moved back to Fraked folder.");
+                            Console.WriteLine(StringHolder.frackfixer_10);//"CloudCoin was moved back to Fraked folder.");
                             break;
                     }
                     // end switch on the place the coin will go 
@@ -215,7 +215,7 @@ namespace Foundation
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.Out.WriteLine("");
-                    Console.WriteLine("Attempting to fix RAIDA " + raida_ID);
+                    Console.WriteLine(StringHolder.frackfixer_11 );//"Attempting to fix RAIDA " + raida_ID);
                     Console.Out.WriteLine("");
                     Console.ForegroundColor = ConsoleColor.White;
 
@@ -225,7 +225,7 @@ namespace Foundation
                     corner = 1;
                     while (!fixer.finnished)
                     {
-                        Console.WriteLine(" Using corner " + corner);
+                        Console.WriteLine( StringHolder.frackfixer_2 + corner );//" Using corner " + corner);
                         fix_result = fixOneGuidCorner(raida_ID, brokeCoin, corner, fixer.currentTriad);
                        // Console.WriteLine(" fix_result: " + fix_result + " for corner " + corner);
                         if (fix_result.Contains("success"))
@@ -246,7 +246,7 @@ namespace Foundation
             }//end for each AN
             DateTime after = DateTime.Now;
             TimeSpan ts = after.Subtract(before);
-            Console.WriteLine("Time spent fixing RAIDA in milliseconds: " + ts.Milliseconds);
+            Console.WriteLine(StringHolder.frackfixer_13);//"Time spent fixing RAIDA in milliseconds: " + ts.Milliseconds);
 
             brokeCoin.calculateHP();//how many fails did it get
             brokeCoin.gradeCoin();
