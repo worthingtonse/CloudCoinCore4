@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Foundation
 {
@@ -45,15 +43,15 @@ namespace Foundation
                     if (File.Exists(this.fileUtils.bankFolder + suspectFileNames[j]))
                     {//Coin has already been imported. Delete it from import folder move to trash.
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Out.WriteLine("You tried to import a coin that has already been imported.");
+                        Console.Out.WriteLine( StringHolder.detector_3 );// "You tried to import a coin that has already been imported.");
                         File.Move(this.fileUtils.suspectFolder + suspectFileNames[j], this.fileUtils.trashFolder + suspectFileNames[j]);
-                        Console.Out.WriteLine("Suspect CloudCoin was moved to Trash folder.");
+                        Console.Out.WriteLine(StringHolder.detector_4 );//"Suspect CloudCoin was moved to Trash folder.");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
                         newCC = this.fileUtils.loadOneCloudCoinFromJsonFile(this.fileUtils.suspectFolder + suspectFileNames[j]);
-                        Console.Out.WriteLine("Now scanning coin " + (j + 1) + " of " + suspectFileNames.Length + " for counterfeit. SN " + string.Format("{0:n0}", newCC.sn) + ", Denomination: " + newCC.getDenomination());
+                        Console.Out.WriteLine( StringHolder.detector_5 + (j + 1) + " of " + suspectFileNames.Length + StringHolder.detector_6 + string.Format("{0:n0}", newCC.sn) + StringHolder.cloudcoin_denomination + newCC.getDenomination());
                         Console.Out.WriteLine("");
 
                         CloudCoin detectedCC = this.raida.detectCoin(newCC, detectTime);
@@ -104,8 +102,8 @@ namespace Foundation
                         {
                             this.fileUtils.writeTo(this.fileUtils.suspectFolder, detectedCC);
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Out.WriteLine("Not enough RAIDA were contacted to determine if the coin is authentic.");
-                            Console.Out.WriteLine("Try again later.");
+                            Console.Out.WriteLine( StringHolder.detector_7 );//"Not enough RAIDA were contacted to determine if the coin is authentic.");
+                            Console.Out.WriteLine( StringHolder.detector_8 );//"Try again later.");
                             Console.ForegroundColor = ConsoleColor.White;
                         }//end if else
 
