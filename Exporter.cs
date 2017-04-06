@@ -289,7 +289,8 @@ namespace Foundation
             /*Add Saying*/
             //json = json.Replace("[]", @""["We The Cloud People"]"");
             File.WriteAllText(filename, json);
-            Console.Out.WriteLine("Writing to " + filename);
+            Console.Out.WriteLine("Writing to : ");
+            Console.Out.WriteLine(filename);
             /*DELETE FILES THAT HAVE BEEN EXPORTED*/
             for (int cc = 0; cc < coinsToDelete.Length; cc++)
             {
@@ -322,11 +323,5 @@ namespace Foundation
                 }//end if
             }//end else
         }//End write one jpeg 
-
-
-
-
-
-
     }// end exporter class
 }//end namespace
