@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+//using Newtonsoft.Json;
 using System.Xml;
 
 namespace Foundation
@@ -22,18 +23,33 @@ namespace Foundation
         public static String counterfeitFolder = rootFolder + "Counterfeit" + Path.DirectorySeparatorChar;
         public static String directoryFolder = rootFolder + "Directory" + Path.DirectorySeparatorChar;
         public static String exportFolder = rootFolder + "Export" + Path.DirectorySeparatorChar;
+        public static String languageFolder = rootFolder + "Language" + Path.DirectorySeparatorChar;
         public static String prompt = "> ";
-        public static String[] commandsAvailable = new String[] { StringHolder.program_command_1, StringHolder.program_command_2, StringHolder.program_command_3, StringHolder.program_command_4, StringHolder.program_command_5, StringHolder.program_command_6, StringHolder.program_command_7, StringHolder.program_command_8 };
+        public static String[] commandsAvailable = new String[]{ "echo raida", "show coins", "import", "export", "fix fracked", "show folders", "export for sales", "quit" };
+        public static string[] countries = new String[]{ "Australia", "Macedonia", "Philippines", "Serbia", "Bulgaria", "Russia", "Switzerland", "United Kingdom", "Punjab", "India", "Texas", "USA", "Romania", "Taiwan", "Moscow", "St. Petersburge", "Columbia", "Singapore", "Germany", "Canada", "Venezuela", "Hyperbad", "USA", "Ukraine", "Luxenburg" };
+      
         //{ "echo raida", "show coins", "import", "export", "fix fracked", "show folders", "export for sales", "quit" };
         public static int timeout = 10000; // Milliseconds to wait until the request is ended. 
         public static FileUtils fileUtils = new FileUtils(rootFolder, importFolder, importedFolder, trashFolder, suspectFolder, frackedFolder, bankFolder, templateFolder, counterfeitFolder, directoryFolder, exportFolder);
         public static Random myRandom = new Random();
-        public static XmlDocument doc = new XmlDocument();
+  
 
         /* MAIN METHOD */
         public static void Main(String[] args)
         {
-           // doc.Load("strings.xml");
+            // doc.Load("strings.xml");
+            /*
+            using (StreamReader file = File.OpenText( languageFolder + @"strings.json"))
+                {
+                   JsonSerializer serializer = new JsonSerializer();
+                   StringHolderTemp st = (StringHolderTemp)serializer.Deserialize(file, typeof(StringHolderTemp));
+                   StringHolder.loadNewlanguage(st);
+                   commandsAvailable = new String[] { StringHolder.program_command_1, StringHolder.program_command_2, StringHolder.program_command_3, StringHolder.program_command_4, StringHolder.program_command_5, StringHolder.program_command_6, StringHolder.program_command_7, StringHolder.program_command_8 };
+                   countries = new string[]{ StringHolder.raida0, StringHolder.raida1, StringHolder.raida2, StringHolder.raida3,StringHolder.raida4,StringHolder.raida5,StringHolder.raida6,StringHolder.raida7,StringHolder.raida8,StringHolder.raida9, StringHolder.raida10,StringHolder.raida11,StringHolder.raida12,StringHolder.raida13,
+StringHolder.raida14, StringHolder.raida15, StringHolder.raida16, StringHolder.raida17, StringHolder.raida18, StringHolder.raida19, StringHolder.raida20, StringHolder.raida21, StringHolder.raida22, StringHolder.raida23, StringHolder.raida24 };
+
+    }
+            */
             printWelcome();
             run(); // Makes all commands available and loops
         } // End main
@@ -99,7 +115,7 @@ namespace Foundation
             Console.BackgroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Out.WriteLine("╔══════════════════════════════════════════════════════════════════╗");
-            Console.Out.WriteLine( StringHolder.program_start_1 );//"║                  CloudCoin Foundation 2 v.4.04.17                ║");
+            Console.Out.WriteLine( StringHolder.program_start_1 );//"║                  CloudCoin Foundation 2 v.4.07.17                ║");
             Console.Out.WriteLine(StringHolder.program_start_2);//"║          Used to Authenticate, Store and Payout CloudCoins       ║");
             Console.Out.WriteLine(StringHolder.program_start_3);//"║      This Software is provided as is with all faults, defects    ║");
             Console.Out.WriteLine(StringHolder.program_start_4);//"║          and errors, and without warranty of any kind.           ║");
@@ -124,25 +140,23 @@ namespace Foundation
             Console.Out.WriteLine();
             for (int i = 0; i < 25; i++)
             {
-                int padding = longestCountryName - RAIDA_Status.countries[i].Length;
+                int padding = longestCountryName - countries[i].Length;
                 string strPad = "";
                 for (int j = 0; j < padding; j++)
                 {
                     strPad += " ";
                 }//end for padding
 
-
-
                 if ( !RAIDA_Status.failsEcho[i])
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Out.Write(RAIDA_Status.countries[i] + strPad);
+                    Console.Out.Write(countries[i] + strPad);
                     totalReady++;
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Out.Write(RAIDA_Status.countries[i] + strPad);
+                    Console.Out.Write( countries[i] + strPad);
                 }
                 if (i == 4 || i == 9 || i == 14 || i == 19) { Console.WriteLine(); }
             }//end for
@@ -196,7 +210,6 @@ namespace Foundation
 
         }// end show
 
-
         public static void showFolders()
         {
             Console.Out.WriteLine( StringHolder.program_showFolders_1 + "\n " + rootFolder);
@@ -211,7 +224,6 @@ namespace Foundation
             Console.Out.WriteLine(StringHolder.program_showFolders_10 + "\n  " + counterfeitFolder);
             Console.Out.WriteLine(StringHolder.program_showFolders_11 + "\n  " + exportFolder);
         } // end show folders
-
 
         public static void import()
         {
