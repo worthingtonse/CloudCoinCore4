@@ -4,8 +4,6 @@ namespace Foundation
     public static class RAIDA_Status
     {
 
-        public static string[] countries = new string[]{ "Australia", "Macedonia", "Philippines", "Serbia","Bulgaria","Russia","Switzerland","United Kingdom","Punjab","India", "Texas","California","Romania","Taiwan",
-"Moscow", "St.Petersburg", "Columbia", "Singapore", "Germany", "San Francisco", "Venezuela", "Hyperbad", "USA", "Sofia", "Luxenburg" };
         public static bool[] failsEcho = { false,false,false,false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
         public static int[] echoTime = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static bool[] failsDetect = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
