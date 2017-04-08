@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//using Newtonsoft.Json;
+//using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Foundation
 {
@@ -149,6 +147,151 @@ namespace Foundation
         public static string keyboardreader_7 = "Fatal error. Exiting program.";
 
 
+
+
+   public static void loadNewlanguage(StringHolderTemp temp) {
+
+        program_command_1 = temp.program_command_1;
+        program_command_2 = temp.program_command_2;
+        program_command_3 = temp.program_command_3;
+        program_command_4 = temp.program_command_4;
+        program_command_5 = temp.program_command_5;
+        program_command_6 = temp.program_command_6;
+        program_command_7 = temp.program_command_7;
+        program_command_8 = temp.program_command_8;
+        program_run_1 = temp.program_run_1;
+        program_run_2 = temp.program_run_2;
+
+        program_start_1 = temp.program_start_1;
+        program_start_2 = temp.program_start_2;
+        program_start_3 = temp.program_start_3;
+        program_start_4 = temp.program_start_4;
+        program_start_5 = temp.program_start_5;
+        program_start_6 = temp.program_start_6;
+        program_echo_1 = temp.program_echo_1;
+        program_echo_2 = temp.program_echo_2;
+        program_echo_3 = temp.program_echo_3;
+        program_echo_4 = temp.program_echo_4;
+        program_echo_5 = temp.program_echo_5;
+        program_echo_6 = temp.program_echo_6;
+        raida0 = temp.raida0;
+        raida1 = temp.raida1;
+        raida2 = temp.raida2;
+        raida3 = temp.raida3;
+        raida4 = temp.raida4;
+        raida5 = temp.raida5;
+        raida6 = temp.raida6;
+        raida7 = temp.raida7;
+        raida8 = temp.raida8;
+        raida9 = temp.raida9;
+        raida10 = temp.raida10;
+        raida11 = temp.raida11;
+        raida12 = temp.raida12;
+        raida13 = temp.raida13;
+        raida14 = temp.raida14;
+        raida15 = temp.raida15;
+        raida16 = temp.raida16;
+        raida17 = temp.raida17;
+        raida18 = temp.raida18;
+        raida19 = temp.raida19;
+        raida20 = temp.raida20;
+        raida21 = temp.raida21;
+        raida22 = temp.raida22;
+        raida23 = temp.raida23;
+        raida24 = temp.raida24;
+        program_showcoins_total = temp.program_showcoins_total;
+        program_showcoins_perfect = temp.program_showcoins_perfect;
+        program_showcoins_fracked = temp.program_showcoins_fracked;
+        program_showFolders_1 = temp.program_showFolders_1;
+        program_showFolders_2 = temp.program_showFolders_2;
+        program_showFolders_3 = temp.program_showFolders_3;
+        program_showFolders_4 = temp.program_showFolders_4;
+        program_showFolders_5 = temp.program_showFolders_5;
+        program_showFolders_6 = temp.program_showFolders_6;
+        program_showFolders_7 = temp.program_showFolders_7;
+        program_showFolders_8 = temp.program_showFolders_8;
+        program_showFolders_9 = temp.program_showFolders_9;
+        program_showFolders_10 = temp.program_showFolders_10;
+        program_showFolders_11 = temp.program_showFolders_11;
+        program_import_1 = temp.program_import_1;
+        program_import_2 = temp.program_import_2;
+        program_import_3 = temp.program_import_3;
+        program_import_4 = temp.program_import_4;
+
+        program_detect_1 = temp.program_detect_1;
+        program_detect_2 = temp.program_detect_2;
+        program_detect_3 = temp.program_detect_3;
+        program_detect_4 = temp.program_detect_4;
+        program_detect_5 = temp.program_detect_5;
+
+        program_dump_1 = temp.program_dump_1;
+        program_dump_2 = temp.program_dump_2;
+        program_dump_3 = temp.program_dump_3;
+        program_dump_4 = temp.program_dump_4;
+        //Note this code is used in export and export for sales
+        program_dump_5 = temp.program_dump_5;
+        program_dump_6 = temp.program_dump_6;
+        program_dump_7 = temp.program_dump_7;
+        program_dump_8 = temp.program_dump_8;
+        program_dump_9 = temp.program_dump_9;
+        program_dump_10 = temp.program_dump_10;
+        program_dump_11 = temp.program_dump_11;
+
+        program_export_1 = temp.program_export_1;
+        program_export_2 = temp.program_export_2;
+        program_export_3 = temp.program_export_3;
+
+        program_fix_1 = temp.program_fix_1;
+        program_fix_2 = temp.program_fix_2;
+        program_fix_3 = temp.program_fix_3;
+        program_fix_4 = temp.program_fix_4;
+        program_fix_5 = temp.program_fix_5;
+
+
+        cloudcoin_report = temp.cloudcoin_report;
+        cloudcoin_denomination = temp.cloudcoin_denomination;
+
+        detector_3 = temp.detector_3;
+        detector_4 = temp.detector_4;
+        detector_5 = temp.detector_5;
+        detector_6 = temp.detector_6;
+        detector_7 = temp.detector_7;
+        detector_8 = temp.detector_8;
+
+        frackfixer_1 = temp.frackfixer_1;
+        frackfixer_2 = temp.frackfixer_2;
+        frackfixer_3 = temp.frackfixer_3;
+        frackfixer_4 = temp.frackfixer_4;
+        frackfixer_5 = temp.frackfixer_5;
+        frackfixer_6 = temp.frackfixer_6;
+        frackfixer_unfracking = temp.frackfixer_unfracking;
+        frackfixer_8 = temp.frackfixer_8;
+        frackfixer_9 = temp.frackfixer_9;
+        frackfixer_10 = temp.frackfixer_10;
+        frackfixer_11 = temp.frackfixer_11;
+        frackfixer_12 = temp.frackfixer_12;
+        frackfixer_13 = temp.frackfixer_13;
+
+        importer_1 = temp.importer_1;
+        importer_2 = temp.importer_2;
+        importer_3 = temp.importer_3;
+        importer_importstack1 = temp.importer_importstack1;
+        importer_importstack2 = temp.importer_importstack2;
+
+        importer_seemsValidJSON_1 = temp.importer_seemsValidJSON_1;
+        importer_seemsValidJSON_2 = temp.importer_seemsValidJSON_2;
+        importer_seemsValidJSON_3 = temp.importer_seemsValidJSON_3;
+        importer_seemsValidJSON_4 = temp.importer_seemsValidJSON_4;
+
+        keyboardreader_1 = temp.keyboardreader_1;
+        keyboardreader_2 = temp.keyboardreader_2;
+        keyboardreader_3 = temp.keyboardreader_3;
+        keyboardreader_4 = temp.keyboardreader_4;
+        keyboardreader_5 = temp.keyboardreader_5;
+        keyboardreader_6 = temp.keyboardreader_6;
+        keyboardreader_7 = temp.keyboardreader_7;
+
+    }//end load new language
 
     }
 }
