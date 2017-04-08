@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Drawing;
-using System.Linq;
 using System.Drawing.Drawing2D;
+//using Newtonsoft.Json;
 
 namespace Foundation
 {
@@ -42,52 +42,107 @@ namespace Foundation
 
         /* PUBLIC METHODS */
         /* This loads a JSON file (.stack) from the hard drive that contains only one CloudCoin and turns it into an object.  */
+  
+        /*  This has a bug that does not parse json unless it is in a specific order.    */
+        public CloudCoin loadOneCloudCoinFromJsonFile(String loadFilePath)
+                {
+                    //Load file as JSON
+                    String incomeJson = this.importJSON(loadFilePath);
+
+                    //STRIP UNESSARY test
+                    int secondCurlyBracket = ordinalIndexOf(incomeJson, "{", 2) - 1;
+                    int firstCloseCurlyBracket = ordinalIndexOf(incomeJson, "}", 0);
+                    // incomeJson = incomeJson.Substring(secondCurlyBracket, firstCloseCurlyBracket);
+                    incomeJson = incomeJson.Substring(secondCurlyBracket, firstCloseCurlyBracket - secondCurlyBracket + 1);
+                    // Console.Out.WriteLine(incomeJson);
+
+                    String[] jsonArray = incomeJson.Split('"');
+
+                    int nn = Convert.ToInt32(jsonArray[3]);
+                    int sn = Convert.ToInt32(jsonArray[7]);
+                    String[] ans = new String[25];
+                    int count = 0;
+                    for (int i = 11; i < 60; i = i + 2)
+                    {
+                        ans[count] = jsonArray[i];
+                        count++;
+                    }
+
+                    String ed = jsonArray[63];
+                    Dictionary<string, string> aoid_dictionary = new Dictionary<string, string>();
+                    aoid_dictionary.Add("memo", "");
+                    String frackedCodes ="";
+                    // Console.Out.WriteLine(jsonArray.Length);
+                    if (incomeJson.Contains("fracked"))//If there is an fracked note that explains the status "fracked=ppppppppfppppppppppppppp"
+                    {
+                        if (incomeJson.Contains("fracked\""))
+                        {
+                            frackedCodes = incomeJson.Substring(incomeJson.IndexOf("fracked") + 10, 25);//fixes bug where we used impropver json, can be deleted later
+                        }
+                        else {
+                            frackedCodes = incomeJson.Substring(incomeJson.IndexOf("fracked") + 8, 25);
+                        }
+
+                       // Console.WriteLine(frackedCodes);
+                        aoid_dictionary.Add("fracked", frackedCodes);
+                    }
+
+                    CloudCoin returnCC = new CloudCoin(nn, sn, ans, ed, aoid_dictionary, "suspect");
+
+                    return returnCC;
+                }//end load one CloudCoin from JSON
+        
+
+        /*
+         This loads a JSON file (.stack) from the hard drive that contains only one CloudCoin and turns it into an object. 
+           This uses Newton soft but causes a enrror System.IO.FileNotFoundException. Could not load file 'Newtonsoft.Json'  
         public CloudCoin loadOneCloudCoinFromJsonFile(String loadFilePath)
         {
+
             //Load file as JSON
             String incomeJson = this.importJSON(loadFilePath);
             //STRIP UNESSARY test
             int secondCurlyBracket = ordinalIndexOf(incomeJson, "{", 2) - 1;
-            int firstCloseCurlyBracket = ordinalIndexOf(incomeJson, "}", 0);
+            int firstCloseCurlyBracket = ordinalIndexOf(incomeJson, "}", 0) - secondCurlyBracket;
             // incomeJson = incomeJson.Substring(secondCurlyBracket, firstCloseCurlyBracket);
-            incomeJson = incomeJson.Substring(secondCurlyBracket, firstCloseCurlyBracket - secondCurlyBracket + 1);
+            incomeJson = incomeJson.Substring(secondCurlyBracket, firstCloseCurlyBracket + 1);
             // Console.Out.WriteLine(incomeJson);
-
-            String[] jsonArray = incomeJson.Split('"');
-
-            int nn = Convert.ToInt32(jsonArray[3]);
-            int sn = Convert.ToInt32(jsonArray[7]);
-            String[] ans = new String[25];
-            int count = 0;
-            for (int i = 11; i < 60; i = i + 2)
-            {
-                ans[count] = jsonArray[i];
-                count++;
-            }
-
-            String ed = jsonArray[63];
+            //Deserial JSON
+            SimpleCoin cc = JsonConvert.DeserializeObject<SimpleCoin>(incomeJson);
+            //Make Coin
+            String[] strAoid = cc.aoid.ToArray();
             Dictionary<string, string> aoid_dictionary = new Dictionary<string, string>();
-            aoid_dictionary.Add("memo", "");
-            String frackedCodes ="";
-            // Console.Out.WriteLine(jsonArray.Length);
-            if (incomeJson.Contains("fracked"))//If there is an fracked note that explains the status "fracked=ppppppppfppppppppppppppp"
-            {
-                if (incomeJson.Contains("fracked\""))
-                {
-                    frackedCodes = incomeJson.Substring(incomeJson.IndexOf("fracked") + 10, 25);//fixes bug where we used impropver json, can be deleted later
+            for (int j = 0; j < strAoid.Length; j++)
+            { //"fracked=ppppppppppppppppppppppppp"
+                if (strAoid[j].Contains("="))
+                {//see if the string contains an equals sign
+                    String[] keyvalue = strAoid[j].Split('=');
+                    aoid_dictionary.Add(keyvalue[0], keyvalue[1]);//index 0 is the key index 1 is the value.
                 }
-                else {
-                    frackedCodes = incomeJson.Substring(incomeJson.IndexOf("fracked") + 8, 25);
-                }
+                else
+                { //There is something there but not a key value pair. Treak it like a memo
+                    aoid_dictionary.Add("memo", strAoid[j]);
+                }//end if cointains an = 
+            }//end for each aoid
 
-               // Console.WriteLine(frackedCodes);
-                aoid_dictionary.Add("fracked", frackedCodes);
-            }
 
-            CloudCoin returnCC = new CloudCoin(nn, sn, ans, ed, aoid_dictionary, "suspect");
+            CloudCoin returnCC = new CloudCoin(cc.nn, cc.sn, cc.an.ToArray(), cc.ed, aoid_dictionary, "suspect");
+            for (int i = 0; (i < 25); i++)
+            {//All newly created loaded coins get new PANs. 
+                returnCC.pans[i] = returnCC.generatePan();
+                //returnCC.pastStatus[i] = "undetected";
+            } // end for each pan
+              //Return Coin
+
+            returnCC.fileName = (returnCC.getDenomination() + (".CloudCoin." + (returnCC.nn + ("." + (returnCC.sn + ".")))));
+            returnCC.json = "";
+            returnCC.jpeg = null;
 
             return returnCC;
         }//end load one CloudCoin from JSON
+
+            */
+
 
         public CloudCoin[] loadManyCloudCoinFromJsonFile(String loadFilePath, string incomeJson)
         {
@@ -102,9 +157,9 @@ namespace Foundation
             incomeJson = incomeJson.Remove(incomeJson.LastIndexOf("]"), 1);
             // Console.Out.WriteLine(incomeJson);
 
-
             String[] pieces = incomeJson.Split('}');//split json file into coins
             returnCoins = new CloudCoin[pieces.Length - 1];//last piece is not a coin
+
             for (int j = 0; j < pieces.Length - 1; j++)//for each cloudcoin segment in the chest or stack file. -1 allows for last runt segment 
             {
                 String currentCoin = pieces[j];
@@ -160,15 +215,12 @@ namespace Foundation
                 returnCC.fileName = (returnCC.getDenomination() + (".CloudCoin." + (returnCC.nn + ("." + (returnCC.sn + ".")))));
                 returnCC.json = "";
                 returnCC.jpeg = null;
-
                 returnCoins[j] = returnCC;
             }//end for each cloudcoin in the json file
 
             return returnCoins;
         }//end load one CloudCoin from JSON
 
-
-      
 
         public CloudCoin loadOneCloudCoinFromJPEGFile(String loadFilePath)
         { 
@@ -379,7 +431,6 @@ namespace Foundation
             return buffer;
         }//end read all bytes
 
-
         public bool writeTo(String folder, CloudCoin cc)
         {
             const string quote = "\"";
@@ -422,7 +473,6 @@ namespace Foundation
 
         }//End Write To
 
-
         public void overWrite(String folder, CloudCoin cc)
         {
             const string quote = "\"";
@@ -437,9 +487,6 @@ namespace Foundation
             File.WriteAllText(folder + cc.fileName + ".stack", wholeJson);
 
         }//End Overwrite
-
-
-
 
         private CloudCoin parseJpeg(String wholeString)
         {
