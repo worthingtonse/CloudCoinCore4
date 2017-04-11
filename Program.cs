@@ -130,6 +130,7 @@ StringHolder.raida14, StringHolder.raida15, StringHolder.raida16, StringHolder.r
 
         public static bool echoRaida()
         {
+            RAIDA_Status.resetEcho();
             RAIDA raida1 = new RAIDA(5000);
             Response[] results = raida1.echoAll(5000);
             int totalReady = 0;

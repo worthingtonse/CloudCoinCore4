@@ -24,6 +24,15 @@ namespace Foundation
             }//end for each RAIDA
         }//end reset Tickers
 
+
+        public static void resetEcho()
+        {
+            for (int i = 0; i < 25; i++)
+            {
+                failsEcho[i] = false;
+            }//end for each RAIDA
+        }//end reset Tickers
+
         /*Used every time the user will try to unfrack another coin from the start.*/
         public static void newCoin()
         {
