@@ -225,7 +225,7 @@ namespace Foundation
                     corner = 1;
                     while (!fixer.finnished)
                     {
-                        Console.WriteLine( StringHolder.frackfixer_2 + corner );//" Using corner " + corner);
+                        Console.WriteLine( StringHolder.frackfixer_12 + corner );//" Using corner " + corner);
                         fix_result = fixOneGuidCorner(raida_ID, brokeCoin, corner, fixer.currentTriad);
                        // Console.WriteLine(" fix_result: " + fix_result + " for corner " + corner);
                         if (fix_result.Contains("success"))
